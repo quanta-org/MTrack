@@ -1,0 +1,24 @@
+version: "3.9"
+services:
+  sao_aspnet:
+    build: ./asp.net
+    container_name: sao_aspnet
+    ports:
+      - "5074:5074"
+    volumes:
+      - ./asp.net:/aspnet
+  sao_svelte:
+    build: ./svelte
+    container_name: sao_svelte
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./svelte:/svelte
+      - /svelte/node_modules
+  sao_oracle:
+    container_name: sao_oracle
+    ports:
+      - '1521:1521'
+    environment:
+      - ORACLE_PASSWORD=orpassword
+    image: gvenzl/oracle-xe
