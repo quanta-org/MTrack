@@ -1,10 +1,19 @@
 version: "3.9"
+
+volumes:
+  oracle_volume:
+
 services:
   sao_aspnet:
     build: ./asp.net
     container_name: sao_aspnet
     ports:
       - "5074:5074"
+    environment:
+      DB: ${DB}
+      DBUSER: ${DBUSER}
+      DBUSERPASS: ${DBUSERPASS}
+      DOTNET_WATCH_RESTART_ON_RUDE_EDIT: 'true'
     volumes:
       - ./asp.net:/aspnet
   sao_svelte:
@@ -20,5 +29,9 @@ services:
     ports:
       - '1521:1521'
     environment:
-      - ORACLE_PASSWORD=orpassword
+      ORACLE_PASSWORD: ${DBPASS}
+      APP_USER: ${DBUSER}
+      APP_USER_PASSWORD: ${DBUSERPASS}
+    volumes:
+      - oracle_volume:/opt/oracle/oradata
     image: gvenzl/oracle-xe

@@ -7,6 +7,7 @@ COPY ./asp.net.csproj .
 RUN dotnet restore
 RUN dotnet add package Microsoft.AspNetCore.OpenApi --version 7.0.1
 RUN dotnet add package Swashbuckle.AspNetCore --version 6.4.0
+RUN dotnet add package Oracle.ManagedDataAccess.Core --version 3.21.80
 
 # Move to container
 COPY . .

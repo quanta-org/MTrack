@@ -18,6 +18,7 @@ WORKDIR /netbuild
 COPY /asp.net/asp.net.csproj .
 RUN dotnet restore
 RUN dotnet add package Microsoft.AspNetCore.OpenApi --version 7.0.1
+RUN dotnet add package Oracle.ManagedDataAccess.Core --version 3.21.80
 
 # Build .net app
 COPY /asp.net/. .

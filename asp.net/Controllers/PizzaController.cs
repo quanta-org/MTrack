@@ -1,5 +1,7 @@
 using asp.net.Models;
 using asp.net.Services;
+using System;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace asp.net.Controllers;
@@ -8,11 +10,6 @@ namespace asp.net.Controllers;
 [Route("api/[controller]")]
 public class PizzaController : ControllerBase
 {
-    public PizzaController()
-    {
-
-    }
-
     [HttpGet("{id}")]
     public ActionResult<Pizza> Get(int id)
     {
@@ -27,4 +24,7 @@ public class PizzaController : ControllerBase
 
     [HttpGet]
     public ActionResult<List<Pizza>> GetAll() => PizzaService.GetAll();
+
+    [HttpPost]
+    public void PostPizza(Pizza pizza) => PizzaService.Add(pizza.Name, pizza.IsGlutenFree);
 }

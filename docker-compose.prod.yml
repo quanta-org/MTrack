@@ -1,14 +1,26 @@
 version: "3.9"
+
+volumes:
+  oracle_volume:
+
 services:
   sao_app:
     build: .
     container_name: sao_app
     ports:
       - "5000:80"
-  sao_db:
-    container_name: sao_db
+    environment:
+      DB: ${DB}
+      DBUSER: ${DBUSER}
+      DBUSERPASS: ${DBUSERPASS}
+  sao_oracle:
+    container_name: sao_oracle
     ports:
       - '1521:1521'
     environment:
-      - ORACLE_PASSWORD=orpassword
+      ORACLE_PASSWORD: ${DBPASS}
+      APP_USER: ${DBUSER}
+      APP_USER_PASSWORD: ${DBUSERPASS}
+    volumes:
+      - oracle_volume:/opt/oracle/oradata
     image: gvenzl/oracle-xe
