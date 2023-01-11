@@ -13,9 +13,10 @@ const config = {
 			assets: 'build',
 			fallback: null,
 			precompress: false,
-			strict: false
+			strict: true
 		})
-	}
+	},
+	preprocess: vitePreprocess()
 };
 
 export default config;

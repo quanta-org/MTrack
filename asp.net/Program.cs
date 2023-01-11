@@ -21,6 +21,8 @@ app.UseHttpsRedirection();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+app.UseExceptionHandler("/error");
+
 app.UseAuthorization();
 
 app.MapControllers();
