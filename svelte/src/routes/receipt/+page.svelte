@@ -1,8 +1,10 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
+    import { enhance } from '$app/forms';
     import { fade } from 'svelte/transition';
     import { Input, Label, Select, Button, Toast } from 'flowbite-svelte';
+    import type { ActionData } from './$types';
 
+    export let form: HTMLFormElement;
     var charArray: string[] = [];
     let ParcelReceipt = {
         ReceiverID: "John",
@@ -35,6 +37,7 @@
     ]
 
 
+
     function onKeypress(event: any){
         if (event.key.length == 1){
             charArray.push(event.key);
@@ -43,7 +46,7 @@
             let tracknum = charArray.join("");
 
             if(ParcelReceipt.TrackingNumber === tracknum){
-                postParcelReceipt();
+                form.submit();
                 return;
             }
 
@@ -81,7 +84,7 @@
         charArray = [];
     }
 
-    function sendToast(message: String, isError: boolean = false){
+    function sendToast(message: String = "", isError: boolean = false){
         toastMessage = message;
         if(isError){
             error = true;
@@ -96,6 +99,7 @@
         }
     }
 
+    /*
     async function postParcelReceipt(){
         // Form validation
         if(!ParcelReceipt.ReceiverID){
@@ -138,7 +142,7 @@
         } else {
             sendToast(await response.text(), true);
         }
-    }
+    }*/
 </script>
 
 <svelte:window on:keydown={onKeypress} on:mousemove={clearArray}></svelte:window>
@@ -169,7 +173,17 @@
 {/if}
 
 <div class="flex justify-center">
-	<form id="form" method="POST" class="w-96 p-5 bg-gray-800 rounded-xl" on:submit|preventDefault={postParcelReceipt}>
+	<form id="form" method="POST" class="w-96 p-5 bg-gray-800 rounded-xl" action="?/addParcelReceipt" bind:this={form} use:enhance={( {} ) => {
+        return async ({ result, update }) => {
+            if (result.type == 'success'){
+                sendToast("Successfully added parcel!");
+            } else if (result.type == 'failure'){
+                sendToast(result.data?.message, true);
+            }
+
+            update();
+        }
+    }}>
         <div class="mb-6">
             <Label for="receiver" class="mb-2">Receiver</Label>
             <Input type="text" id="receiver" name="receiver" tabindex="-1" bind:value={ParcelReceipt.ReceiverID} on:change={clearArray} readonly required />
@@ -177,7 +191,7 @@
 
         <div class="mb-6">
             <Label for="location" class="mb-2">Receipt Location</Label>
-            <Select id="location" name="receiptlocation" tabindex="-1" items={receiptLocations} bind:value={ParcelReceipt.ReceiptLocation} class="mt-2" required />
+            <Select id="location" name="receiptLocation" tabindex="-1" items={receiptLocations} bind:value={ParcelReceipt.ReceiptLocation} class="mt-2" required />
         </div>
 
         <div class="mb-6">
@@ -187,12 +201,12 @@
 
         <div class="mb-6">
             <Label for="routlocation" class="mb-2">Routing Location</Label>
-            <Select id="routlocation" name="routelocation" tabindex="-1" items={routingLocations} bind:value={ParcelReceipt.RoutingLocation} class="mb-2" required />
+            <Select id="routlocation" name="routeLocation" tabindex="-1" items={routingLocations} bind:value={ParcelReceipt.RoutingLocation} class="mb-2" required />
         </div>
 
         <div class="mb-6">
             <Label for="tracknum" class="mb-2">Tracking Number</Label>
-            <Input type="text" id="tracknum" name="tracknum" tabindex="-1" bind:value={ParcelReceipt.TrackingNumber} placeholder="1Z 6F8..." required />
+            <Input type="text" id="tracknum" name="trackNumber" tabindex="-1" bind:value={ParcelReceipt.TrackingNumber} placeholder="1Z 6F8..." required />
         </div>
         
         <div class="flex justify-center">
